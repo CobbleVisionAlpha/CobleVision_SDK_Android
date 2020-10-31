@@ -108,7 +108,7 @@ public class CobbleVisionAPI{
      
       urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint).openConnection()))
       urlConnection.setDoOutput(true)
-      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes(UTF_8), Base64.NO_WRAP)
+      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
       urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
       urlConnection.setRequestProperty("Content-Type", "application/json")
       urlConnection.setRequestProperty("Accept", "application/json")
@@ -116,7 +116,7 @@ public class CobbleVisionAPI{
       urlConnection.setConnectionTimeout(10000000000000000000000)
       urlConnection.connect()
       
-      OutputStreamWriter wr= new OutputStreamWriter(urlConnection.getOutputStream());
+      OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
       wr.write(jsonString);
       wr.close()
       
@@ -170,6 +170,7 @@ public class CobbleVisionAPI{
       }
       
       public String[] invalidMedia = checkArrayForValidObjectID(IDArray)
+      
       if(invalidMedia.length > 0){
         throw new Exception("You supplied a media ID which is invalid in format!")
       }
@@ -178,23 +179,26 @@ public class CobbleVisionAPI{
       for (int i=0; i<IDArray.length; i++){
         jsArray.put(IDArray[i]);
       }
+     
+      urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint + "?id=" + jsArray.toString()).openConnection()))
+      urlConnection.setDoOutput(true)
+      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
+      urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
+      urlConnection.setRequestProperty("Content-Type", "application/json")
+      urlConnection.setRequestProperty("Accept", "application/json")
+      urlConnection.setRequestMethod("Delete")
+      urlConnection.setConnectionTimeout(10000000000000000000000)
+      urlConnection.connect()
       
-      private ClosableHTTPClient client = HttpClients.createDefault();
-      private HTTPDelete httpDelete  = new HTTPDelete(this.baseURL+endpoint + "?id=" + jsArray.toString())
-      httpDelete.setHeader("Accept", "application/json")
-      httpDelete.setHeader("Content-Type", "application/json")
-      private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-      httpDelete.setHeader(new BasicScheme().authenticate(creds, httpDelete, null))
-      
-      private ClosableHTTPResponse response = client.execute(httpDelete)
-      private HttpEntity deleteEntity = response.getEntity()
-      client.close()
+      // read the response
+      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
       
       if(GlobalVars.debugging){
-        System.out.println(EntityUtils.toString(response.getEntity());)
+        System.out.println(result)
       }
       
-      return CompletableFuture.completeFuture(deleteEntity);
+      return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
@@ -261,24 +265,29 @@ public class CobbleVisionAPI{
       
       private String jsonString = obj.toString()
      
-      private ClosableHTTPClient client = HttpClients.createDefault();
-      private HTTPPost httpPost = new HttpPost(this.baseURL+endpoint)
-      private StringEntity entity = new StringEntitty(jsonString)
-      httpPost.setEntity(entity)
-      httpPost.setHeader("Accept", "application/json")
-      httpPost.setHeader("Content-Type", "application/json")
-      private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-      httpPost.setHeader(new BasicScheme().authenticate(creds, httpPost, null))
+      urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint).openConnection()))
+      urlConnection.setDoOutput(true)
+      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
+      urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
+      urlConnection.setRequestProperty("Content-Type", "application/json")
+      urlConnection.setRequestProperty("Accept", "application/json")
+      urlConnection.setRequestMethod("Post")
+      urlConnection.setConnectionTimeout(10000000000000000000000)
+      urlConnection.connect()
       
-      private ClosableHTTPResponse response = client.execute(httpPost)
-      private HttpEntity postEntity = response.getEntity()
-      client.close()
-      
+      OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+      wr.write(jsonString);
+      wr.close()
+
+      // read the response
+      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+
       if(GlobalVars.debugging){
-        System.out.println(EntityUtils.toString(response.getEntity());)
+        System.out.println(result)
       }
       
-      return CompletableFuture.completeFuture(postEntity);
+      return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
@@ -331,21 +340,25 @@ public class CobbleVisionAPI{
       
       calculationFinishedBool=false
       while(calculationFinishedBool == False){
-        private ClosableHTTPClient client = HttpClients.createDefault();
-        private HTTPGet httpGet = new HTTPGet(this.baseURL+endpoint + "?id=" + jsArray.toString())
-        httpGet.setHeader("Accept", "application/json")
-        httpGet.setHeader("Content-Type", "application/json")
-        private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-        httpGet.setHeader(new BasicScheme().authenticate(creds, httpGet, null))
-      
-        private ClosableHTTPResponse response = client.execute(httpGet)
-        private HttpEntity getEntity = response.getEntity()
-        client.close()
         
+        urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint + "?id=" + jsArray.toString()).openConnection()))
+        urlConnection.setDoOutput(true)
+        String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
+        urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
+        urlConnection.setRequestProperty("Content-Type", "application/json")
+        urlConnection.setRequestProperty("Accept", "application/json")
+        urlConnection.setRequestMethod("Get")
+        urlConnection.setConnectionTimeout(10000000000000000000000)
+        urlConnection.connect()
+
+        // read the response
+        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+        String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+
         try{
-          private JSONArray o = (JSONArray) new JSONTokener(EntityUtils.toString(request.getEntity().getContent()).nextValue()
+          private JSONArray o = (JSONArray) new JSONTokener(result).nextValue()
         }catch e as Exception{
-          private JSONObject o = new JSONObject(EntityUtils.toString(request.getEntity().getContent()), StandardCharsets.UTF_8)
+          private JSONObject o = new JSONObject(result, StandardCharsets.UTF_8)
         }
 
         if(o instanceof JSONArray){
@@ -368,10 +381,10 @@ public class CobbleVisionAPI{
         }
 
         if(GlobalVars.debugging){
-          System.out.println(EntityUtils.toString(response.getEntity());)
+          System.out.println(EntityUtils.toString(result);)
         }
       
-        return CompletableFuture.completeFuture(getEntity);
+        return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
@@ -421,23 +434,26 @@ public class CobbleVisionAPI{
       for (int i=0; i < IDArray.length; i++){
         jsArray.put(IDArray[i]);
       }
+
+      urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint + "?id=" + jsArray.toString()).openConnection()))
+      urlConnection.setDoOutput(true)
+      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
+      urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
+      urlConnection.setRequestProperty("Content-Type", "application/json")
+      urlConnection.setRequestProperty("Accept", "application/json")
+      urlConnection.setRequestMethod("Delete")
+      urlConnection.setConnectionTimeout(10000000000000000000000)
+      urlConnection.connect()
       
-      private ClosableHTTPClient client = HttpClients.createDefault();
-      private HTTPDelete httpDelete = new HTTPDelete(this.baseURL+endpoint + "?id=" + jsArray.toString())
-      httpDelete.setHeader("Accept", "application/json")
-      httpDelete.setHeader("Content-Type", "application/json")
-      private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-      httpDelete.setHeader(new BasicScheme().authenticate(creds, httpDelete, null))
-      
-      private ClosableHTTPResponse response = client.execute(httpDelete)
-      private HttpEntity deleteEntity = response.getEntity()
-      client.close()
+      // read the response
+      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
       
       if(GlobalVars.debugging){
-        System.out.println(EntityUtils.toString(response.getEntity());)
+        System.out.println(result)
       }
       
-      return CompletableFuture.completeFuture(deleteEntity);
+      return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
@@ -489,22 +505,25 @@ public class CobbleVisionAPI{
         jsArray.put(IDArray[i]);
       }
       
-      private ClosableHTTPClient client = HttpClients.createDefault();
-      private HTTPGet httpGet = new HTTPGet(this.baseURL+endpoint + "?id=" + jsArray.toString() + "&returnOnlyStatusBool=" + returnOnlyStatusBool.toString())
-      httpGet.setHeader("Accept", "application/json")
-      httpGet.setHeader("Content-Type", "application/json")
-      private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-      httpGet.setHeader(new BasicScheme().authenticate(creds, httpGet, null))
-      
-      private ClosableHTTPResponse response = client.execute(httpGet)
-      private HttpEntity getEntity = response.getEntity()
-      client.close()
+      urlConnection = (HttpURLConnection) ((newURL(this.baseURL+endpoint + "?id=" + jsArray.toString() + "&returnOnlyStatusBool=" + returnOnlyStatusBool.toString()).openConnection()))
+      urlConnection.setDoOutput(true)
+      String base64Auth = Base64.encodeToString(new String(apiUserName + ":" + apiToken).getBytes("UTF_8"), Base64.NO_WRAP)
+      urlConnection.setRequestProperty("Authorization", "Basic " + base64Auth)
+      urlConnection.setRequestProperty("Content-Type", "application/json")
+      urlConnection.setRequestProperty("Accept", "application/json")
+      urlConnection.setRequestMethod("Get")
+      urlConnection.setConnectionTimeout(10000000000000000000000)
+      urlConnection.connect()
+
+      // read the response
+      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
       
       if(GlobalVars.debugging){
-        System.out.println(EntityUtils.toString(response.getEntity());)
+        System.out.println(result)
       }
       
-      return CompletableFuture.completeFuture(getEntity);
+      return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
@@ -552,23 +571,16 @@ public class CobbleVisionAPI{
       if(invalidCalcs.length > 0){
         throw new Exception("You supplied a calc ID which is invalid in format!")
       }
-      
-      private ClosableHTTPClient client = HttpClients.createDefault();
-      private HTTPGet httpGet = new HTTPGet(this.baseURL + endpoint + "?id=" + id + "&returnBase64Bool=" + returnBase64Bool.toString() + "&width=" + width + "&height=" + height)
-      httpGet.setHeader("Accept", "application/json")
-      httpGet.setHeader("Content-Type", "application/json")
-      private UsernamePasswordCredentials creds = new usernamePasswordCredentials(apiUserName, apiToken)
-      httpGet.setHeader(new BasicScheme().authenticate(creds, httpGet, null))
-      
-      private ClosableHTTPResponse response = client.execute(httpGet)
-      private HttpEntity getEntity = response.getEntity()
-      client.close()
-      
+
+      // read the response
+      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+
       if(GlobalVars.debugging){
-        System.out.println(EntityUtils.toString(response.getEntity());)
+        System.out.println(result)
       }
       
-      return CompletableFuture.completeFuture(getEntity);
+      return CompletableFuture.completeFuture(result);
     }catch e as Exception{
     
       if(GlobalVars.debugging){
